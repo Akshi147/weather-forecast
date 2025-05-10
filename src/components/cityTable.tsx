@@ -1,8 +1,17 @@
-'use-client';
+'use client';
 import React from 'react';
+import Link from 'next/link';
 
 interface CityTableProps {
-  cities: { name: string; country: string; timezone: string }[];
+  cities: {
+    name: string;
+    country: string;
+    timezone: string;
+    coordinates?: {  // Optional coordinates, as not all cities may have this
+      lat: number;
+      lon: number;
+    };
+  }[]; // City data now has an optional 'coordinates'
   search: string;
 }
 
@@ -20,17 +29,37 @@ const CityTable = ({ cities, search }: CityTableProps) => {
         <tbody>
           {cities.length > 0 ? (
             cities
-            .filter((city) => city.name.toLowerCase().includes(search.toLowerCase()))
-            .map((city, index) => (
-              <tr key={index} className="bg-gray-200">
-                <td className="border border-black px-4 py-2">{city.name.normalize("NFD").replace(/\p{Diacritic}/gu, '').replace(/[\u2018\u2019\u201A\u201B\u2039\u203A]/g, " ")}</td>
-                <td className="px-4 py-2 border border-black">{city.country}</td>
-                <td className="px-4 py-2 border border-black">{city.timezone}</td>
-              </tr>
-            ))
+              .filter((city) => city.name.toLowerCase().includes(search.toLowerCase()))
+              .map((city, index) => {
+                const coordinates = city.coordinates;
+                // Ensure coordinates are available
+                const lat = coordinates?.lat;
+                const lon = coordinates?.lon;
+
+                return (
+                  <tr key={index} className="bg-gray-200">
+                    <td className="border border-black px-4 py-2">
+                      {/* Only link if lat and lon are available */}
+                      {lat && lon ? (
+                        <Link
+                          href={`/weather/${encodeURIComponent(city.name.toLowerCase())}?lat=${lat}&lon=${lon}`}
+                        >
+                          {city.name}
+                        </Link>
+                      ) : (
+                        <span>{city.name}</span> // Fallback if lat/lon are unavailable
+                      )}
+                    </td>
+                    <td className="px-4 py-2 border border-black">{city.country}</td>
+                    <td className="px-4 py-2 border border-black">{city.timezone}</td>
+                  </tr>
+                );
+              })
           ) : (
             <tr>
-              <td colSpan={3} className="px-4 py-2 text-center text-gray-500">No cities found</td>
+              <td colSpan={3} className="px-4 py-2 text-center text-gray-500">
+                No cities found
+              </td>
             </tr>
           )}
         </tbody>
