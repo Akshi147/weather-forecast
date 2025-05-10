@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description: 'Weather app built with Next.js',
 };
 
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">

@@ -42,7 +42,7 @@ const CityTable = ({ cities, search }: CityTableProps) => {
                       {/* Only link if lat and lon are available */}
                       {lat && lon ? (
                         <Link
-                          href={`/weather/${encodeURIComponent(city.name.toLowerCase())}?lat=${lat}&lon=${lon}`}
+                          href={`/weather/${encodeURIComponent(city.name.replace(/['‘’"]/g, '').trim().toLowerCase())}?lat=${lat}&lon=${lon}`}
                         >
                           {city.name}
                         </Link>
