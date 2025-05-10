@@ -1,49 +1,40 @@
-'use client';  // Ensure this file is treated as a client component
-
+'use-client';
 import React from 'react';
 
-// Type definition for City
-interface City {
-  name: string;
-  country: string;
-  timezone: string;
-}
-
 interface CityTableProps {
-  cities: City[];
+  cities: { name: string; country: string; timezone: string }[];
   search: string;
 }
 
-const CityTable: React.FC<CityTableProps> = ({ cities, search }) => {
-  // Filter cities based on the search term
-  const filteredCities = cities.filter((city) =>
-    city.name.toLowerCase().includes(search.toLowerCase())
-  );
-
+const CityTable = ({ cities, search }: CityTableProps) => {
   return (
-    <div>
-      {filteredCities.length === 0 ? (
-        <p>No cities found</p>
-      ) : (
-        <table className="table-auto w-full">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Country</th>
-              <th className="px-4 py-2">Timezone</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCities.map((city) => (
-              <tr key={city.name}>
-                <td className="border px-4 py-2">{city.name}</td>
-                <td className="border px-4 py-2">{city.country}</td>
-                <td className="border px-4 py-2">{city.timezone}</td>
+    <div className="overflow-x-auto w-full">
+      <table className="mt-px min-w-full bg-gray-100 table-auto border-collapse border border-black">
+        <thead>
+          <tr className="bg-gray-100 text-lg font-semibold text-left">
+            <th className="py-px border border-black">City</th>
+            <th className="py-px border border-black">Country</th>
+            <th className="py-px border border-black">TimeZone</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cities.length > 0 ? (
+            cities
+            .filter((city) => city.name.toLowerCase().includes(search.toLowerCase()))
+            .map((city, index) => (
+              <tr key={index} className="bg-gray-200">
+                <td className="border border-black px-4 py-2">{city.name.normalize("NFD").replace(/\p{Diacritic}/gu, '').replace(/[\u2018\u2019\u201A\u201B\u2039\u203A]/g, " ")}</td>
+                <td className="px-4 py-2 border border-black">{city.country}</td>
+                <td className="px-4 py-2 border border-black">{city.timezone}</td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3} className="px-4 py-2 text-center text-gray-500">No cities found</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -1,20 +1,23 @@
-// src/app/layout.tsx
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import Providers from './providers';
 
-const queryClient = new QueryClient();
+const inter = Inter({ subsets: ['latin'] });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const metadata: Metadata = {
+  title: 'Weather Forecast',
+  description: 'Weather app built with Next.js',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <html lang="en">
-        <body>{children}</body>
-      </html>
-    </QueryClientProvider>
+    <html lang="en">
+      <body className={inter.className}>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
+    </html>
   );
 }
